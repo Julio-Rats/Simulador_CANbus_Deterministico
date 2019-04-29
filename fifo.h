@@ -27,10 +27,11 @@ typedef struct{
 
 }head_t;
 
-extern head_t* list_event; // list_event = ponteiro da lista de eventos.
+head_t* list_event; // list_event = ponteiro da lista de eventos.
 
 head_t* init_list();
 void    add_list(event_t new_event);
+void    rem_list(fifo_t* event);
 void    organize_list();
 
 
