@@ -15,7 +15,8 @@
 typedef struct{
 
   u_int16_t id;
-  u_int16_t cycle_time;
+  double    cycle_time;
+  double    delay_start_time;
   u_int8_t  payload;
 
 }frame_t;
@@ -31,9 +32,10 @@ typedef struct{
 
 typedef struct{
 
-  frame_t   frame;
-  u_int32_t time_current;
-  u_int32_t time_happen;
+  frame_t frame;
+  double  duration;
+  double  time_current;
+  double  time_happen;
 
 }event_t;
 
