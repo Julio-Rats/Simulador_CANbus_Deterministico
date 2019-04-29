@@ -1,9 +1,10 @@
 #ifndef CANDB
 #define  CANDB
+
 #include "fifo.h"
 #include <math.h>
 
-#define  BITS_FRAMES   41  // BITS
+#define  BITS_FRAMES   76  // BITS
 #define  PAYLOAD_FRAME 64  // BITS
 #define  SPEED_BIT   (double)(pow(2,20)/1000)
 

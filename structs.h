@@ -17,6 +17,7 @@ typedef struct{
   u_int16_t id;
   double    cycle_time;
   double    delay_start_time;
+  double    wcrt;
   u_int8_t  payload;
 
 }frame_t;

@@ -1,16 +1,15 @@
 #include "simulador.h"
-#define DEBUG 0
+//#define DEBUG 0
 
-void start_simulation(double time_end_simulation){
+void start_simulation(double time_end_simulation, u_int8_t DEBUG){
     state_current = RUNNING;
     fifo_t* aux    = NULL;
     time_current_simulation = list_event->first->event.time_current;
-    u_int32_t frames_write = 0;
+    u_int32_t frames_write  = 0;
     while(time_current_simulation < time_end_simulation){
       if (state_current == RUNNING){
           frames_write++;
           aux = get_priority_frame();
-
 
           if (DEBUG){
               for(fifo_t* aux=list_event->first;aux;aux=aux->next_event){
@@ -45,17 +44,20 @@ void start_simulation(double time_end_simulation){
       list_event->first = NULL;
       verific_queue();
     }
-    printf("frames total %ld\n", frames_write);
-    printf("tamanho max da fila = %d\n", max_length_queue);
-    printf("tempo max da fila = %lf\n", time_max_queue);
-    printf("numero de give = %d\n", msg_give_up);
-    printf("wcrt ID: %d temp: %lf\n", wcrt_id, wcrt);
-    printf("tempo simulação = %lf\n", time_current_simulation);
+    get_wcrt();
+    printf("\nFrames escritos     = %ld (Frames)\n", frames_write);
+    printf("Tamanho max da fila = %d (Frames)\n", max_length_queue);
+    printf("Numero de deadlines = %d (Frames)\n", msg_give_up);
+    printf("Tempo max da fila   = %lf (ms)\n", time_max_queue);
+    printf("WCRT ID: %d temp  = %lf (ms)\n", wcrt_id, wcrt);
+    printf("Media WCRT          = %lf (ms)\n", get_mean_wcrt());
+    printf("Busload             = %lf (%)\n", (((frames_write*(BITS_FRAMES+PAYLOAD_FRAME))/SPEED_BIT)/10)*(1000/time_current_simulation));
+    printf("Tempo de simulação  = %lf (ms)\n\n", time_current_simulation);
 
 }
 
 fifo_t* get_priority_frame(){
-    u_int16_t high_priority  = 2048;
+    u_int16_t high_priority  = pow(2,16)-1;
     fifo_t*    event_priority = NULL;
     for(fifo_t* aux=list_event->first; aux; aux=aux->next_event)
          if ((aux->event.frame.id < high_priority) && (aux->event.time_happen <= time_current_simulation)){
@@ -128,14 +130,32 @@ double small_time(double time){
 
 void verific_wcrt(){
     for(fifo_t* aux=list_event->first; aux; aux=aux->next_event)
-      if (wcrt<(aux->event.time_happen-aux->event.time_current)) {
-          wcrt = aux->event.time_happen-aux->event.time_current;
-          wcrt_id = aux->event.frame.id;
-      }
+      if (aux->event.frame.wcrt<(aux->event.time_happen-aux->event.time_current))
+          aux->event.frame.wcrt = aux->event.time_happen-aux->event.time_current;
+
 }
 
 void check_time(double time){
     for(fifo_t* aux=list_event->first; aux; aux=aux->next_event)
         if (aux->event.time_current < time_current_simulation+time)
             aux->event.time_happen = time_current_simulation+time;
+}
+
+void get_wcrt(){
+    wcrt = 0;
+    for(fifo_t* aux=list_event->first; aux; aux=aux->next_event)
+      if (wcrt<aux->event.frame.wcrt){
+          wcrt    = aux->event.frame.wcrt;
+          wcrt_id = aux->event.frame.id;
+      }
+}
+
+double get_mean_wcrt(){
+    u_int16_t cont  = 0;
+    double    media = 0;
+    for(fifo_t* aux=list_event->first; aux; aux=aux->next_event){
+        cont++;
+        media += aux->event.frame.wcrt;
+    }
+    return (double)(media/cont);
 }

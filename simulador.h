@@ -23,12 +23,15 @@ states_e state_current;
 
 fifo_t* get_priority_frame();
 double small_time(double time);
-void   start_simulation(double time_of_simulation);
+double get_mean_wcrt();
+void   get_wcrt();
+void   start_simulation(double time_of_simulation,  u_int8_t DEBUG);
 void   add_time_lost_arbitrage(double time);
 void   realloc_event(fifo_t* event);
 void   verific_queue();
 void   verific_give_up();
 void   verific_wcrt();
 void   check_time(double time);
+
 
 #endif
