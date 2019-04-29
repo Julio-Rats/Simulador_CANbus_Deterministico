@@ -3,7 +3,7 @@
 #include "fifo.h"
 #include <math.h>
 
-#define  BITS_FRAMES   48  // BITS
+#define  BITS_FRAMES   41  // BITS
 #define  PAYLOAD_FRAME 64  // BITS
 #define  SPEED_BIT   (double)(pow(2,20)/1000)
 

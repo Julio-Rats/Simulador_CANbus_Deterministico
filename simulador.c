@@ -5,27 +5,32 @@ void start_simulation(double time_end_simulation){
     state_current = RUNNING;
     fifo_t* aux    = NULL;
     time_current_simulation = list_event->first->event.time_current;
-
+    u_int32_t frames_write = 0;
     while(time_current_simulation < time_end_simulation){
       if (state_current == RUNNING){
+          frames_write++;
           aux = get_priority_frame();
 
 
           if (DEBUG){
-            for(fifo_t* aux=list_event->first;aux;aux=aux->next_event){
-              printf("ID = %lu  ", aux->event.frame.id);
-              printf("cycle = %lf  ", aux->event.frame.cycle_time);
-              printf("Payload = %lu  ", aux->event.frame.payload);
-              printf("Happen time: %lf\n", aux->event.time_happen);
-            }
-            printf("\nWRITE ID %d -- ", aux->event.frame.id);
-            printf("%lf\n", time_current_simulation);
-            getchar();
+              for(fifo_t* aux=list_event->first;aux;aux=aux->next_event){
+                  printf("ID = %lu  ", aux->event.frame.id);
+                  printf("cycle = %lf  ", aux->event.frame.cycle_time);
+                  printf("Current time: %lf\n", aux->event.time_current);
+                  printf("Happen time: %lf\n", aux->event.time_happen);
+              }
+              printf("\nWRITE ID %d -- ", aux->event.frame.id);
+              printf("%lf\n", time_current_simulation);
+              printf("wcrt ID: %d temp: %lf\n", wcrt_id, wcrt);
+              printf("tamanho da fila = %d\n", length_queue);
+              printf("tamanho max fila = %d\n", max_length_queue);
+              printf("tempo max da fila = %lf\n", time_max_queue);
+              getchar();
           }
-
 
           add_time_lost_arbitrage(aux->event.duration);
           realloc_event(aux);
+          check_time(aux->event.duration);
           time_current_simulation = small_time(time_end_simulation);
           state_current = WAIT;
       }else if (state_current == WAIT){ // ARB
@@ -40,6 +45,7 @@ void start_simulation(double time_end_simulation){
       list_event->first = NULL;
       verific_queue();
     }
+    printf("frames total %ld\n", frames_write);
     printf("tamanho max da fila = %d\n", max_length_queue);
     printf("tempo max da fila = %lf\n", time_max_queue);
     printf("numero de give = %d\n", msg_give_up);
@@ -94,7 +100,7 @@ void verific_queue(){
         length_queue = 0;
         end_time_queue = time_current_simulation;
         if ((end_time_queue-start_time_queue) > time_max_queue)
-            time_max_queue = (end_time_queue-start_time_queue);
+            time_max_queue = (double)(end_time_queue-start_time_queue);
     }
     length_queue = cont;
 }
@@ -122,8 +128,14 @@ double small_time(double time){
 
 void verific_wcrt(){
     for(fifo_t* aux=list_event->first; aux; aux=aux->next_event)
-      if (wcrt<(aux->event.time_happen-aux->event.time_current)){
+      if (wcrt<(aux->event.time_happen-aux->event.time_current)) {
           wcrt = aux->event.time_happen-aux->event.time_current;
           wcrt_id = aux->event.frame.id;
       }
+}
+
+void check_time(double time){
+    for(fifo_t* aux=list_event->first; aux; aux=aux->next_event)
+        if (aux->event.time_current < time_current_simulation+time)
+            aux->event.time_happen = time_current_simulation+time;
 }

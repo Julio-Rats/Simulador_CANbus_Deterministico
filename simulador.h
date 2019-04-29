@@ -29,5 +29,6 @@ void   realloc_event(fifo_t* event);
 void   verific_queue();
 void   verific_give_up();
 void   verific_wcrt();
+void   check_time(double time);
 
 #endif
