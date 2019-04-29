@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-O3 -W
-TARGET=simualdor
+TARGET=simulador
 HDR=$(wildcard *.h)
 SRC=$(wildcard *.c)
 OBJ=$(SRC:.c=.o)
