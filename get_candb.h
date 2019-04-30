@@ -4,7 +4,7 @@
 #include "fifo.h"
 #include <math.h>
 
-#define  BITS_FRAMES   60  // BITS 47 ->frame + 10 -> bit_stuff + 3 bit time
+#define  BITS_FRAMES   70  // BITS 47 ->frame + 10 -> bit_stuff + 13 bit time
 #define  PAYLOAD_FRAME 64  // BITS
 #define  SPEED_BIT   (double)(pow(2,20)/1000)
 
