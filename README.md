@@ -1,4 +1,4 @@
-# Simulador_CANbus_deterministico
+# Simulador_CANbus_Deterministico
 
 Codigo que implementa um simulador deterministico de um barramento CAN 2.0A
 com entrada de um arquivo padrão de frames descrito abaixo, exemplo arquivo input.txt.
