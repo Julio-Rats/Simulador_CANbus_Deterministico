@@ -1,12 +1,18 @@
 # Simulador_CANbus_deterministico
 
 Codigo que implementa um simulador deterministico de um barramento CAN 2.0A
-com entrada de um aquivo padrão de frames descrito abaixo, exemplo aquivo input.txt.
+com entrada de um arquivo padrão de frames descrito abaixo, exemplo arquivo input.txt.
 
 arquivo entrada:
 "separar apenas por um espaço os valores"
 
 < ID > < CYCLE_TIME > < DELAY_START_TIME >
+
+ID: ID do quadro CAN2.0A [0..2047]
+
+CYCLE_TIME: Tempo de ciclo da mensagem
+
+DELAY_START_TIME: Tempo de espera para primeiro acesso ao barramento, 0 para imediato.
 
 Entrada do programa:
 
