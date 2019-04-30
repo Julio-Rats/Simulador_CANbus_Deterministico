@@ -36,5 +36,5 @@ void input_file(u_int8_t* path){
 
 
 double get_duration_frame(u_int8_t payload){
-    return (double)(payload/SPEED_BIT);
+    return (double)((double)payload/SPEED_BIT);
 }

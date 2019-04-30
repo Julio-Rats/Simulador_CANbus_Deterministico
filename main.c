@@ -7,10 +7,11 @@ int main(int argc, char const *argv[]) {
   if (argc < 3){
       printf("\nSimulador CANbus 2.0A\n\n");
       printf("Utilize a sintaxe:\n\n\t%s <Arq> <Time> [DEBUG]\n", argv[0]);
-      printf("\n   Arq: Arquivo descritivo com os frames\n");
-      printf("  Time: Tempo da simulação\n");
-      printf("  DEBUG: Debug em tempo de execução\n\n");
-      exit(0);
+      printf("\n   Arq: Arquivo descritivo com os frames (path)\n");
+      printf("  Time: Tempo da simulação (ms)\n");
+      printf("  DEBUG: Debug em tempo de execução (0->False; 1->True)\n\n");
+      exit(14);
+
   }else if (argc == 4){
       debug = atoi(argv[3]);
   }
