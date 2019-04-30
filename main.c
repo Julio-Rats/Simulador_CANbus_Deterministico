@@ -17,27 +17,6 @@ int main(int argc, char const *argv[]) {
 
   input_file((u_int8_t*)argv[1]);
   start_simulation((double)atoll(argv[2]), debug);
-  //
-  //
-  // fifo_t* temp = get_priority_frame();
-  // time_current_simulation = 100;
-  // printf("%d\n", temp->event.frame.id);
-  // realloc_event(temp);
-  // add_time_lost_arbitrage(temp->event.duration);
-  // next_time_event = time_current_simulation + temp->event.duration;
-  // verific_queue();
-  // verific_give_up();
-  // printf("tamanho da fila = %d\n", length_queue);
-  // printf("numero de give = %d\n", msg_give_up);
-  // // temp = get_priority_frame();
-  // printf("%d\n", list_event->first->event.frame.id);
-  // //
-  // for(fifo_t* aux=list_event->first;aux;aux=aux->next_event){
-  //     printf("ID = %lu  ", aux->event.frame.id);
-  //     printf("cycle = %lf  ", aux->event.frame.cycle_time);
-  //     printf("Payload = %lu  ", aux->event.frame.payload);
-  //     printf("Current time: %lf\n", aux->event.time_happen);
-  // }
 
   return 0;
 }
