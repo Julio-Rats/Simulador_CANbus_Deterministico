@@ -17,14 +17,7 @@ u_int16_t max_length_queue;
 u_int16_t min_length_queue;
 u_int16_t mean_length_queue;
 u_int16_t current_length_queue;
-u_int16_t msg_give_up;
-
-
-typedef enum{
-    RUNNING=0, WAIT, GNC, /*get no cycle*/
-}states_e;
-
-states_e state_current;
+u_int16_t msg_deadline;
 
 fifo_t* get_priority_frame();
 double small_time(double time);

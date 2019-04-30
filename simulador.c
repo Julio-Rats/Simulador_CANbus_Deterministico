@@ -8,12 +8,11 @@ void start_simulation(double time_end_simulation, u_int8_t DEBUG){
     wcrt             = 0;
     number_of_queue  = 0;
     time_mean_queue  = 0;
-    msg_give_up      = 0;
+    msg_deadline     = 0;
     fifo_t* aux       = NULL;
     u_int32_t frames_write  = 0;
     time_current_simulation = list_event->first->event.time_current;
     while(time_current_simulation < time_end_simulation){
-      // if (state_current == RUNNING){
           frames_write++;
           aux = get_priority_frame();
 
@@ -36,24 +35,16 @@ void start_simulation(double time_end_simulation, u_int8_t DEBUG){
           add_time_lost_arbitrage(aux->event.duration);
           realloc_event(aux);
           check_time(aux->event.duration);
-          // time_current_simulation = small_time(time_end_simulation);
-          // state_current = WAIT;
-      // }else if (state_current == WAIT){ // ARB
           verific_queue();
           verific_give_up();
           verific_wcrt();
-          // state_current = RUNNING;
-      // }
+
       time_current_simulation = small_time(time_end_simulation);
     } // while
 
-    // if (length_queue!=0){
-    //   list_event->first = NULL;
-    //   verific_queue();
-    // }
     get_wcrt();
     printf("\nFrames escritos        = %ld (Frames)\n", frames_write);
-    printf("Numero de deadlines    = %d (Frames)\n\n", msg_give_up);
+    printf("Numero de deadlines    = %d (Frames)\n\n", msg_deadline);
 
     printf("Numero de filas        = %d (Unid.)\n", number_of_queue);
     printf("Frames em fila acumul. = %d (Unid.)\n\n", mean_length_queue);
@@ -94,6 +85,10 @@ void add_time_lost_arbitrage(double time){
 
 void realloc_event(fifo_t* event){
     rem_list(event);
+    if (event->event.frame.cycle_time < 0){
+        free(event);
+        return;
+    }
     if ((event->event.time_current + event->event.frame.cycle_time)>=time_current_simulation){
         event->event.time_happen += event->event.frame.cycle_time;
     }else{
@@ -127,13 +122,12 @@ void verific_queue(){
         if ((end_time_queue-start_time_queue) < time_min_queue)
             time_min_queue = ((double)end_time_queue-start_time_queue);
 
+        if (min_length_queue > current_length_queue)
+        min_length_queue = current_length_queue;
+
         number_of_queue++;
         mean_length_queue += current_length_queue;
         time_mean_queue   += ((double)end_time_queue-start_time_queue);
-
-
-        if (min_length_queue > current_length_queue)
-            min_length_queue = current_length_queue;
 
         current_length_queue = 0;
     }
@@ -143,14 +137,13 @@ void verific_queue(){
 void verific_give_up(){
     u_int16_t count=0;
     for(fifo_t* aux=list_event->first; aux; aux=aux->next_event)
-        if (aux->event.time_happen >= (aux->event.frame.cycle_time+aux->event.time_current)){
-            count += 1;
-            realloc_event(aux);
-        }
+       if (aux->event.time_happen >= (aux->event.frame.cycle_time+aux->event.time_current)){
+          count += 1;
+          realloc_event(aux);
+       }
 
-    if (msg_give_up < count)
-        msg_give_up = count;
-
+    if (msg_deadline < count)
+       msg_deadline = count;
 }
 
 double small_time(double time){
@@ -163,15 +156,15 @@ double small_time(double time){
 
 void verific_wcrt(){
     for(fifo_t* aux=list_event->first; aux; aux=aux->next_event)
-      if (aux->event.frame.wcrt<(aux->event.time_happen-aux->event.time_current))
-          aux->event.frame.wcrt = aux->event.time_happen-aux->event.time_current;
+      if (aux->event.frame.wcrt < (aux->event.time_happen-aux->event.time_current))
+         aux->event.frame.wcrt = aux->event.time_happen-aux->event.time_current;
 
 }
 
 void check_time(double time){
     for(fifo_t* aux=list_event->first; aux; aux=aux->next_event)
         if (aux->event.time_current < time_current_simulation+time)
-            aux->event.time_happen = time_current_simulation+time;
+           aux->event.time_happen = time_current_simulation+time;
 }
 
 void get_wcrt(){
@@ -183,7 +176,7 @@ void get_wcrt(){
 }
 
 double get_mean_wcrt(){
-    u_int16_t count  = 0;
+    u_int16_t count = 0;
     double    media = 0;
     for(fifo_t* aux=list_event->first; aux; aux=aux->next_event){
         count++;
