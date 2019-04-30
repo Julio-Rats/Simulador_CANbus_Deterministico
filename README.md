@@ -6,7 +6,7 @@ com entrada de um aquivo padrão de frames descrito abaixo, exemplo aquivo input
 arquivo entrada:
 "separar apenas por um espaço os valores"
 
-<ID> <CYCLE_TIME> <DELAY_START_TIME>
+< ID > < CYCLE_TIME > < DELAY_START_TIME >
 
 Entrada do programa:
 
