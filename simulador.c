@@ -1,13 +1,19 @@
 #include "simulador.h"
 //#define DEBUG 0
 
+
 void start_simulation(double time_end_simulation, u_int8_t DEBUG){
-    state_current = RUNNING;
-    fifo_t* aux    = NULL;
-    time_current_simulation = list_event->first->event.time_current;
+    min_length_queue = 65535;
+    time_min_queue   = 2147483647;
+    wcrt             = 0;
+    number_of_queue  = 0;
+    time_mean_queue  = 0;
+    msg_give_up      = 0;
+    fifo_t* aux       = NULL;
     u_int32_t frames_write  = 0;
+    time_current_simulation = list_event->first->event.time_current;
     while(time_current_simulation < time_end_simulation){
-      if (state_current == RUNNING){
+      // if (state_current == RUNNING){
           frames_write++;
           aux = get_priority_frame();
 
@@ -30,29 +36,41 @@ void start_simulation(double time_end_simulation, u_int8_t DEBUG){
           add_time_lost_arbitrage(aux->event.duration);
           realloc_event(aux);
           check_time(aux->event.duration);
-          time_current_simulation = small_time(time_end_simulation);
-          state_current = WAIT;
-      }else if (state_current == WAIT){ // ARB
+          // time_current_simulation = small_time(time_end_simulation);
+          // state_current = WAIT;
+      // }else if (state_current == WAIT){ // ARB
           verific_queue();
           verific_give_up();
           verific_wcrt();
-          state_current = RUNNING;
-      }
+          // state_current = RUNNING;
+      // }
+      time_current_simulation = small_time(time_end_simulation);
     } // while
 
-    if (length_queue!=0){
-      list_event->first = NULL;
-      verific_queue();
-    }
+    // if (length_queue!=0){
+    //   list_event->first = NULL;
+    //   verific_queue();
+    // }
     get_wcrt();
-    printf("\nFrames escritos     = %ld (Frames)\n", frames_write);
-    printf("Tamanho max da fila = %d (Frames)\n", max_length_queue);
-    printf("Numero de deadlines = %d (Frames)\n", msg_give_up);
-    printf("Tempo max da fila   = %lf (ms)\n", time_max_queue);
-    printf("WCRT ID: %d temp  = %lf (ms)\n", wcrt_id, wcrt);
-    printf("Media WCRT          = %lf (ms)\n", get_mean_wcrt());
-    printf("Busload             = %lf (%)\n", (((frames_write*(BITS_FRAMES+PAYLOAD_FRAME))/SPEED_BIT)/10)*(1000/time_current_simulation));
-    printf("Tempo de simulação  = %lf (ms)\n\n", time_current_simulation);
+    printf("\nFrames escritos        = %ld (Frames)\n", frames_write);
+    printf("Numero de deadlines    = %d (Frames)\n\n", msg_give_up);
+
+    printf("Numero de filas        = %d (Unid.)\n", number_of_queue);
+    printf("Frames em fila acumul. = %d (Unid.)\n\n", mean_length_queue);
+
+    printf("Tamanho min de fila    = %d (Frames)\n", min_length_queue);
+    printf("Tamanho medio de filas = %lf (Frames)\n", ((double)mean_length_queue/number_of_queue));
+    printf("Tamanho max de fila    = %d (Frames)\n\n", max_length_queue);
+
+    printf("Tempo min de fila      = %lf (ms)\n", time_min_queue);
+    printf("Tempo medio de filas   = %lf (ms)\n", ((double)time_mean_queue/number_of_queue));
+    printf("Tempo max de fila      = %lf (ms)\n\n", time_max_queue);
+
+    printf("WCRT ID: %d WRCT Time: %lf (ms)\n", wcrt_id, wcrt);
+    printf("Media WCRT             = %lf (ms)\n\n", get_mean_wcrt());
+
+    printf("Busload                = %lf (%)\n", (((frames_write*(BITS_FRAMES+PAYLOAD_FRAME))/SPEED_BIT)/10)*(1000/time_current_simulation));
+    printf("Tempo de simulação     = %lf (ms)\n\n", time_current_simulation);
 
 }
 
@@ -86,37 +104,52 @@ void realloc_event(fifo_t* event){
 }
 
 void verific_queue(){
-    u_int16_t cont=0;
+    u_int16_t count=0;
     for(fifo_t* aux=list_event->first; aux; aux=aux->next_event)
         if (aux->event.time_current != aux->event.time_happen)
-            cont += 1;
+            count += 1;
 
-    if (cont!=0){
+    if (count!=0){
         if (length_queue==0)
             start_time_queue = time_current_simulation;
 
-        if (max_length_queue < cont)
-            max_length_queue = cont;
+        if (max_length_queue < count)
+            max_length_queue = count;
+
+        if (current_length_queue < count)
+            current_length_queue = count;
 
     }else if (length_queue!=0){
-        length_queue = 0;
         end_time_queue = time_current_simulation;
         if ((end_time_queue-start_time_queue) > time_max_queue)
-            time_max_queue = (double)(end_time_queue-start_time_queue);
+            time_max_queue = ((double)end_time_queue-start_time_queue);
+
+        if ((end_time_queue-start_time_queue) < time_min_queue)
+            time_min_queue = ((double)end_time_queue-start_time_queue);
+
+        number_of_queue++;
+        mean_length_queue += current_length_queue;
+        time_mean_queue   += ((double)end_time_queue-start_time_queue);
+
+
+        if (min_length_queue > current_length_queue)
+            min_length_queue = current_length_queue;
+
+        current_length_queue = 0;
     }
-    length_queue = cont;
+    length_queue = count;
 }
 
 void verific_give_up(){
-    u_int16_t cont=0;
+    u_int16_t count=0;
     for(fifo_t* aux=list_event->first; aux; aux=aux->next_event)
         if (aux->event.time_happen >= (aux->event.frame.cycle_time+aux->event.time_current)){
-            cont += 1;
+            count += 1;
             realloc_event(aux);
         }
 
-    if (msg_give_up < cont)
-        msg_give_up = cont;
+    if (msg_give_up < count)
+        msg_give_up = count;
 
 }
 
@@ -142,7 +175,6 @@ void check_time(double time){
 }
 
 void get_wcrt(){
-    wcrt = 0;
     for(fifo_t* aux=list_event->first; aux; aux=aux->next_event)
       if (wcrt<aux->event.frame.wcrt){
           wcrt    = aux->event.frame.wcrt;
@@ -151,11 +183,11 @@ void get_wcrt(){
 }
 
 double get_mean_wcrt(){
-    u_int16_t cont  = 0;
+    u_int16_t count  = 0;
     double    media = 0;
     for(fifo_t* aux=list_event->first; aux; aux=aux->next_event){
-        cont++;
+        count++;
         media += aux->event.frame.wcrt;
     }
-    return (double)(media/cont);
+    return (double)(media/(double)count);
 }
