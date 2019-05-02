@@ -10,9 +10,9 @@ arquivo entrada:
 
 ID: ID do quadro CAN2.0A [0..2047]
 
-CYCLE_TIME: Tempo de ciclo da mensagem
+CYCLE_TIME: Tempo de ciclo da mensagem [1..2147483647] (ms)
 
-DELAY_START_TIME: Tempo de espera para primeiro acesso ao barramento, 0 para imediato.
+DELAY_START_TIME: Tempo de espera para primeiro acesso ao barramento, 0 para imediato [0..2147483647] (ms)
 
 Entrada do programa:
 
@@ -20,6 +20,6 @@ Entrada do programa:
 
 PATH: Caminho com o arquivo descrevendo os quadros CAN.
 
-TIME: Tempo de simulação de milissegundos (ms)
+TIME: Tempo de simulação de milissegundos [0..2147483646] (ms)
 
 DEBUG_MODE: 0 para falso, 1 para mostrar estado das mensagens a cada escrita.
