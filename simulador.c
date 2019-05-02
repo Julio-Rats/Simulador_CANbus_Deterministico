@@ -43,6 +43,21 @@ void start_simulation(double time_end_simulation, u_int8_t DEBUG){
     } // while
 
     get_wcrt();
+    double mean_wcrt = get_mean_wcrt();
+    list_event->first = NULL;
+    verific_queue();
+
+    double print_mean_queue_length = 0;
+    double print_mean_queue_time   = 0;
+
+    if (number_of_queue == 0){
+       min_length_queue = 0;
+       time_min_queue   = 0;
+    }else{
+       print_mean_queue_length = ((double)mean_length_queue/number_of_queue);
+       print_mean_queue_time   = ((double)time_mean_queue/number_of_queue);
+    }
+
     printf("\nFrames escritos        = %ld (Frames)\n", frames_write);
     printf("Numero de deadlines    = %d (Frames)\n\n", msg_deadline);
 
@@ -50,15 +65,15 @@ void start_simulation(double time_end_simulation, u_int8_t DEBUG){
     printf("Frames em fila acumul. = %d (Unid.)\n\n", mean_length_queue);
 
     printf("Tamanho min de fila    = %d (Frames)\n", min_length_queue);
-    printf("Tamanho medio de filas = %lf (Frames)\n", ((double)mean_length_queue/number_of_queue));
+    printf("Tamanho medio de filas = %lf (Frames)\n", print_mean_queue_length);
     printf("Tamanho max de fila    = %d (Frames)\n\n", max_length_queue);
 
     printf("Tempo min de fila      = %lf (ms)\n", time_min_queue);
-    printf("Tempo medio de filas   = %lf (ms)\n", ((double)time_mean_queue/number_of_queue));
+    printf("Tempo medio de filas   = %lf (ms)\n", print_mean_queue_time);
     printf("Tempo max de fila      = %lf (ms)\n\n", time_max_queue);
 
     printf("WCRT ID: %d WRCT Time: %lf (ms)\n", wcrt_id, wcrt);
-    printf("Media WCRT             = %lf (ms)\n\n", get_mean_wcrt());
+    printf("Media WCRT             = %lf (ms)\n\n", mean_wcrt);
 
     printf("Busload                = %lf (%)\n", (((frames_write*(BITS_FRAMES+PAYLOAD_FRAME))/SPEED_BIT)/10)*(1000/time_current_simulation));
     printf("Tempo de simulação     = %lf (ms)\n\n", time_current_simulation);
