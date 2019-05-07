@@ -22,10 +22,10 @@ void start_simulation(double time_end_simulation, u_int8_t DEBUG){
     length_queue     = 0;
     msg_deadline     = 0;
     max_length_queue = 0;
-    min_length_queue = 0;
     fifo_t* aux       = NULL;
     acumul_length_queue = 0;
     time_current_simulation = list_event->first->event.time_current;
+
     while(time_current_simulation < time_end_simulation){
           frames_write++;
           aux = get_priority_frame();

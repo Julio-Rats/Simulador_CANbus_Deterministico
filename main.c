@@ -17,9 +17,6 @@ int main(int argc, char *argv[]) {
         debug = atoi(argv[3]);
   }
 
-
-  main_simulated(argv[1], atol(argv[2]), debug);
-  main_simulated("input2.txt", atol(argv[2]), debug);
-  return 0;
+  return main_simulated(argv[1], atol(argv[2]), debug);
 
 }
