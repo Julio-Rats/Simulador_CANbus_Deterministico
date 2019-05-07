@@ -3,22 +3,25 @@
 
 #include "get_candb.h" // include to structs.h, fifo.h
 
-double time_current_simulation;
-double start_time_queue;
+double wcrt;
 double end_time_queue;
 double time_min_queue;
 double time_max_queue;
 double time_mean_queue;
-double wcrt;
+double start_time_queue;
+double busload_simulated;
+double time_current_simulation;
 u_int16_t wcrt_id;
 u_int16_t length_queue;
+u_int16_t msg_deadline;
+u_int32_t frames_write;
 u_int16_t number_of_queue;
 u_int16_t max_length_queue;
 u_int16_t min_length_queue;
-u_int16_t mean_length_queue;
+u_int16_t acumul_length_queue;
 u_int16_t current_length_queue;
-u_int16_t msg_deadline;
 
+int    main_simulated(char* path, double time_simulation, u_int8_t debug);
 fifo_t* get_priority_frame();
 double small_time(double time);
 double get_mean_wcrt();

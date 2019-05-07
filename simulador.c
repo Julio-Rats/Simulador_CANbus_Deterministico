@@ -1,6 +1,14 @@
 #include "simulador.h"
 //#define DEBUG 0
+#define VERBOSE 1
 
+int main_simulated(char* path, double time_simulation, u_int8_t debug) {
+
+  input_file(path);
+  start_simulation(time_simulation, debug);
+
+  return 0;
+}
 
 void start_simulation(double time_end_simulation, u_int8_t DEBUG){
     min_length_queue = 65535;
@@ -9,8 +17,14 @@ void start_simulation(double time_end_simulation, u_int8_t DEBUG){
     number_of_queue  = 0;
     time_mean_queue  = 0;
     msg_deadline     = 0;
+    frames_write     = 0;
+    time_max_queue   = 0;
+    length_queue     = 0;
+    msg_deadline     = 0;
+    max_length_queue = 0;
+    min_length_queue = 0;
     fifo_t* aux       = NULL;
-    u_int32_t frames_write  = 0;
+    acumul_length_queue = 0;
     time_current_simulation = list_event->first->event.time_current;
     while(time_current_simulation < time_end_simulation){
           frames_write++;
@@ -50,33 +64,37 @@ void start_simulation(double time_end_simulation, u_int8_t DEBUG){
     double print_mean_queue_length = 0;
     double print_mean_queue_time   = 0;
 
+    busload_simulated = (((frames_write*(BITS_FRAMES+PAYLOAD_FRAME))/SPEED_BIT)/10)*(1000/time_current_simulation);
+
     if (number_of_queue == 0){
        min_length_queue = 0;
        time_min_queue   = 0;
     }else{
-       print_mean_queue_length = ((double)mean_length_queue/number_of_queue);
+       print_mean_queue_length = ((double)acumul_length_queue/number_of_queue);
        print_mean_queue_time   = ((double)time_mean_queue/number_of_queue);
     }
 
-    printf("\nFrames escritos        = %ld (Frames)\n", frames_write);
-    printf("Numero de deadlines    = %d (Frames)\n\n", msg_deadline);
+    if (VERBOSE){
+        printf("\nFrames escritos        = %ld (Frames)\n", frames_write);
+        printf("Numero de deadlines    = %d (Frames)\n\n", msg_deadline);
 
-    printf("Numero de filas        = %d (Unid.)\n", number_of_queue);
-    printf("Frames em fila acumul. = %d (Unid.)\n\n", mean_length_queue);
+        printf("Numero de filas        = %d (Unid.)\n", number_of_queue);
+        printf("Frames em fila acumul. = %d (Unid.)\n\n", acumul_length_queue);
 
-    printf("Tamanho min de fila    = %d (Frames)\n", min_length_queue);
-    printf("Tamanho medio de filas = %lf (Frames)\n", print_mean_queue_length);
-    printf("Tamanho max de fila    = %d (Frames)\n\n", max_length_queue);
+        printf("Tamanho min de fila    = %d (Frames)\n", min_length_queue);
+        printf("Tamanho medio de filas = %lf (Frames)\n", print_mean_queue_length);
+        printf("Tamanho max de fila    = %d (Frames)\n\n", max_length_queue);
 
-    printf("Tempo min de fila      = %lf (ms)\n", time_min_queue);
-    printf("Tempo medio de filas   = %lf (ms)\n", print_mean_queue_time);
-    printf("Tempo max de fila      = %lf (ms)\n\n", time_max_queue);
+        printf("Tempo min de fila      = %lf (ms)\n", time_min_queue);
+        printf("Tempo medio de filas   = %lf (ms)\n", print_mean_queue_time);
+        printf("Tempo max de fila      = %lf (ms)\n\n", time_max_queue);
 
-    printf("WCRT ID: %d WRCT Time: %lf (ms)\n", wcrt_id, wcrt);
-    printf("Media WCRT             = %lf (ms)\n\n", mean_wcrt);
+        printf("WCRT ID: %d WRCT Time: %lf (ms)\n", wcrt_id, wcrt);
+        printf("Media WCRT             = %lf (ms)\n\n", mean_wcrt);
 
-    printf("Busload                = %lf (%)\n", (((frames_write*(BITS_FRAMES+PAYLOAD_FRAME))/SPEED_BIT)/10)*(1000/time_current_simulation));
-    printf("Tempo de simulação     = %lf (ms)\n\n", time_current_simulation);
+        printf("Busload                = %lf (%)\n", busload_simulated);
+        printf("Tempo de simulação     = %lf (ms)\n\n", time_current_simulation);
+    }
 
 }
 
@@ -141,8 +159,8 @@ void verific_queue(){
         min_length_queue = current_length_queue;
 
         number_of_queue++;
-        mean_length_queue += current_length_queue;
-        time_mean_queue   += ((double)end_time_queue-start_time_queue);
+        acumul_length_queue += current_length_queue;
+        time_mean_queue     += ((double)end_time_queue-start_time_queue);
 
         current_length_queue = 0;
     }
