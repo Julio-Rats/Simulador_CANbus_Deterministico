@@ -16,10 +16,8 @@ DELAY_START_TIME: Tempo de espera para primeiro acesso ao barramento, 0 para ime
 
 Entrada do programa:
 
-./simulador < PATH > < TIME > [DEBUG_MODE]
+./simulador < PATH > < TIME >
 
 PATH: Caminho com o arquivo descrevendo os quadros CAN.
 
 TIME: Tempo de simulação de milissegundos [0..2147483646] (ms)
-
-DEBUG_MODE: 0 para falso, 1 para mostrar estado das mensagens a cada escrita.
