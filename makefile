@@ -6,17 +6,17 @@ SRC=$(wildcard *.c)
 OBJ=$(SRC:.c=.o)
 HDRC=$(HDR:.h=.h.gch)
 
-all: $(TARGET) clean
+all: $(TARGET)
 # regras para gerar o executavel
-$(TARGET) : .h .c
+$(TARGET) : .c
 	$(CC) -o $@ $(OBJ) $(CFLAGS)
 
 # regras de compilação
 .c:
 	$(CC) -c $(SRC) $(CFLAGS)
 
-.h:
-	$(CC) -c $(HDR) $(CFLAGS)
+# .h:
+# 	$(CC) -c $(HDR) $(CFLAGS)
 
 clean:
 	rm -rf $(OBJ) $(HDRC)

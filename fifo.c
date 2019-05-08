@@ -22,7 +22,7 @@ void add_list(event_t new_event){
   fifo_t* aux = list_event->first;
   int8_t flag = 0;
 
-  while((aux->event.time_happen <= new_event.time_current)){
+  while((aux->event.time_current <= new_event.time_current)){
       if (!(aux->next_event)){
           flag = 1;
           break;
@@ -52,7 +52,6 @@ void add_list(event_t new_event){
 
 }
 
-
 void rem_list(fifo_t* event){
     if(!event->prev_event){
         list_event->first = event->next_event;
@@ -62,5 +61,5 @@ void rem_list(fifo_t* event){
     if(event->next_event){
         event->next_event->prev_event = event->prev_event;
     }
-    // free(event); // pensamento adiante não precisa remover pq pode ser ciclico.
+    free(event);
 }

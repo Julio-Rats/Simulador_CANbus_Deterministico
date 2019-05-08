@@ -2,18 +2,17 @@
 
 void input_file(u_int8_t* path){
 
-
 		FILE *arch = NULL;
 		arch = fopen(path,"r");
 
 		if (!(arch)){
 				perror("Archive not found");
-				exit(2);
+				exit(ERROR_IO);
 		}
 
     list_event = init_list();
-    frame_t frame;
-    event_t evento;
+    frame_t   frame;
+    event_t   evento;
 		u_int16_t id;
 		double    cycle_time;
 		double    delay_start_time;
@@ -23,8 +22,8 @@ void input_file(u_int8_t* path){
           frame.id = id;
           frame.cycle_time       = (double)(cycle_time);
           frame.delay_start_time = (double)(delay_start_time);
-          frame.payload = PAYLOAD_FRAME+BITS_FRAMES;
-          evento.frame  = frame;
+          frame.payload   = PAYLOAD_FRAME+BITS_FRAMES;
+          evento.frame    = frame;
 					evento.duration = get_duration_frame(frame.payload);
           evento.time_current = frame.delay_start_time;
           evento.time_happen  = frame.delay_start_time;
