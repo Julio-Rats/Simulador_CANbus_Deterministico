@@ -71,8 +71,6 @@ void start_simulation(double time_end_simulation){
 
     get_wcrt();
     double mean_wcrt = get_mean_wcrt();
-    list_event->first = NULL;
-    verific_queue();
 
     busload_simulated = (((frames_write*(BITS_FRAMES+PAYLOAD_FRAME))/SPEED_BIT)/10)*(1000/time_current_simulation);
 
@@ -108,6 +106,8 @@ void start_simulation(double time_end_simulation){
         printf("Busload                \t %lf (%)\n",    busload_simulated);
         printf("Tempo de simulação     \t %lf (ms)\n\n", time_current_simulation);
     #endif
+
+    free_recurses();
 
 }
 
@@ -241,4 +241,13 @@ double get_mean_wcrt(){
         media += aux->event.frame.wcrt;
     }
     return (double)(media/(double)count);
+}
+
+void free_recurses(){
+
+    for(fifo_t* aux=list_event->first; aux; aux=aux->next_event)
+       if (aux->prev_event)
+          rem_list(aux->prev_event);
+    rem_list(list_event->first);
+
 }
