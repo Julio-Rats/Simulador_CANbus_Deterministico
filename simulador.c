@@ -1,7 +1,4 @@
 #include "simulador.h"
-#define DEBUG 0
-#define PRINT_FRAMES 0
-#define RESULTS 1
 
 int main_simulated(char* path, double time_simulation) {
 
@@ -70,9 +67,9 @@ void start_simulation(double time_end_simulation){
     #endif
 
     get_wcrt();
-    double mean_wcrt = get_mean_wcrt();
-
+    double mean_wcrt  = get_mean_wcrt();
     busload_simulated = (((frames_write*(BITS_FRAMES+PAYLOAD_FRAME))/SPEED_BIT)/10)*(1000/time_current_simulation);
+    free_recurses();
 
     #if RESULTS
         double print_mean_queue_length = 0;
@@ -106,8 +103,6 @@ void start_simulation(double time_end_simulation){
         printf("Busload                \t %lf (%)\n",    busload_simulated);
         printf("Tempo de simulação     \t %lf (ms)\n\n", time_current_simulation);
     #endif
-
-    free_recurses();
 
 }
 

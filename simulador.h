@@ -3,6 +3,10 @@
 
 #include "get_candb.h" // include to structs.h, fifo.h
 
+#define DEBUG        0
+#define PRINT_FRAMES 0
+#define RESULTS      0
+
 double wcrt;
 double end_time_queue;
 double time_min_queue;
