@@ -4,8 +4,10 @@
 #include "fifo.h"
 #include <math.h>
 
-#define ERROR_IO      4
 #define SIMULATION_OK 0
+#define ERROR_IO      1
+#define ERROR_ARGS    2
+
 #define BITS_FRAMES   70  // BITS 47 ->frame + 10 -> bit_stuff + 13 bit time
 #define PAYLOAD_FRAME 64  // BITS
 #define SPEED_BIT (double)(pow(2,20)/1000)

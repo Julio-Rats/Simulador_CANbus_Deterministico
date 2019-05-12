@@ -22,7 +22,7 @@ void start_simulation(double time_end_simulation){
     msg_deadline     = 0;
     max_length_queue = 0;
     fifo_t* aux       = NULL;
-    acumul_length_queue = 0;
+    acumul_length_queue     = 0;
     time_current_simulation = list_event->first->event.time_happen;
 
     while(time_current_simulation < time_end_simulation){
@@ -97,7 +97,7 @@ void start_simulation(double time_end_simulation){
         printf("Tempo medio de filas   \t %lf (ms)\n",   print_mean_queue_time);
         printf("Tempo max de fila      \t %lf (ms)\n\n", time_max_queue);
 
-        printf("WCRT ID %d WRCT Time\t %lf (ms)\n",      wcrt_id, wcrt);
+        printf("Soma de todos os WRCT  \t %lf (ms)\n",   wcrt);
         printf("Media WCRT             \t %lf (ms)\n\n", mean_wcrt);
 
         printf("Busload                \t %lf (%)\n",    busload_simulated);
@@ -218,12 +218,12 @@ void verific_wcrt(){
 }
 
 void get_wcrt(){
-
+    wcrt = 0;
     for(fifo_t* aux=list_event->first; aux; aux=aux->next_event)
-      if (wcrt<aux->event.frame.wcrt){
-          wcrt    = aux->event.frame.wcrt;
-          wcrt_id = aux->event.frame.id;
-      }
+      // if (wcrt<aux->event.frame.wcrt){
+          wcrt    += aux->event.frame.wcrt;
+          // wcrt_id = aux->event.frame.id;
+      // }
 }
 
 double get_mean_wcrt(){
