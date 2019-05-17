@@ -1,12 +1,12 @@
-CC=gcc
-CFLAGS=-O3 -W
-TARGET=simulador
+CC= gcc
+CFLAGS= -O3
+TARGET= simulador
 HDR=$(wildcard *.h)
 SRC=$(wildcard *.c)
 OBJ=$(SRC:.c=.o)
 HDRC=$(HDR:.h=.h.gch)
 
-all: $(TARGET)
+all: $(TARGET) main
 # regras para gerar o executavel
 $(TARGET) : .c
 	$(CC) -o $@ $(OBJ) $(CFLAGS)
@@ -17,6 +17,9 @@ $(TARGET) : .c
 
 # .h:
 # 	$(CC) -c $(HDR) $(CFLAGS)
+
+main:
+	rm -rf main.o
 
 clean:
 	rm -rf $(OBJ) $(HDRC)

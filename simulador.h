@@ -15,7 +15,7 @@ double time_mean_queue;
 double start_time_queue;
 double busload_simulated;
 double time_current_simulation;
-// u_int16_t wcrt_id;
+
 u_int32_t frames_write;
 u_int16_t length_queue;
 u_int16_t msg_deadline;

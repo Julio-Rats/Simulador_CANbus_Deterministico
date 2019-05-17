@@ -12,7 +12,7 @@
 #define PAYLOAD_FRAME 64  // BITS
 #define SPEED_BIT (double)(pow(2,20)/1000)
 
-void   input_file(u_int8_t* path);
+void   input_file(char* path);
 double get_duration_frame(u_int8_t payload);
 
 #endif

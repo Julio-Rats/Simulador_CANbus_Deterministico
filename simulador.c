@@ -44,7 +44,7 @@ void start_simulation(double time_end_simulation){
               }
               printf("\nWRITE ID %d\tStart Time ", aux->event.frame.id);
               printf("%lf\n\n", time_current_simulation);
-              printf("tamanho da fila\t%d\n", length_queue);
+              printf("tamanho da fila \t%d\n", length_queue);
               printf("tamanho max fila\t%d\n", max_length_queue);
               printf("tempo inicial da fila\t%lf\n", start_time_queue);
               printf("tempo final da fila\t%lf\n", end_time_queue);
@@ -83,7 +83,7 @@ void start_simulation(double time_end_simulation){
            print_mean_queue_time   = ((double)time_mean_queue/number_of_queue);
         }
 
-        printf("\nFrames escritos     \t %ld (Frames)\n",  frames_write);
+        printf("\nFrames escritos     \t %d (Frames)\n",  frames_write);
         printf("Numero de deadlines   \t %d (Frames)\n\n", msg_deadline);
 
         printf("Numero de filas        \t %d (Unid.)\n",    number_of_queue);

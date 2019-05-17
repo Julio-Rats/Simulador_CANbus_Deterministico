@@ -1,6 +1,6 @@
 #include "get_candb.h"
 
-void input_file(u_int8_t* path){
+void input_file(char* path){
 
 		FILE *arch = NULL;
 		arch = fopen(path,"r");
@@ -18,7 +18,7 @@ void input_file(u_int8_t* path){
 		double    delay_start_time;
 		rewind(arch);
 
-		while (fscanf(arch,"%lu\t%lf\t%lf\n", &id, &cycle_time, &delay_start_time) != EOF){
+		while (fscanf(arch,"%hu\t%lf\t%lf\n", &id, &cycle_time, &delay_start_time) != EOF){
           frame.id               = id;
           frame.cycle_time       = (double)(cycle_time);
           frame.delay_start_time = (double)(delay_start_time);
